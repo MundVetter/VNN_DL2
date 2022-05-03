@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('--data_path', type=str, default='data/admorph/', help='Data path')
     return parser.parse_args()
 
-def test(model, loader, num_class=40):
+def test(model, loader, num_class=11): #FIXME: num_class is never defined
     mean_correct = []
     class_acc = np.zeros((num_class,3))
     for j, data in tqdm(enumerate(loader), total=len(loader)):
