@@ -1,0 +1,18 @@
+name: dl2
+channels:
+  - pytorch
+  - conda-forge
+  - fvcore
+  - iopath
+  - bottler
+  - pytorch3d
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch=1.9.1
+  - torchvision
+  - cudatoolkit=10.2
+  - fvcore
+  - iopath
+  - nvidiacub
+  - pytorch3d
