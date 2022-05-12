@@ -18,4 +18,4 @@ cd $HOME/vnn_dl2
 # Activate your environment
 source activate dl2
 # Run your code
-srun python train_cls.py --model vn_pointnet_cls --log_dir vn_pointnet/default2 --optimizer Adam --pooling max
+srun python train_cls.py --model vn_pointnet_cls --log_dir vn_pointnet/default2z --optimizer Adam --pooling max --rot z
