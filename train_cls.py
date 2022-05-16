@@ -43,10 +43,10 @@ def parse_args():
     parser.add_argument('--pooling', type=str, default='mean', help='VNN only: pooling method [default: mean]',
                         choices=['mean', 'max'])
     parser.add_argument('--n_knn', default=20, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
-    parser.add_argument('--data_path', type=str, default='data/admorph/', help='Data path')
+    parser.add_argument('--data_path', type=str, default='data/modelnet40_normal_resampled/', help='Data path')
     return parser.parse_args()
 
-def test(model, loader, num_class=11): #FIXME: num_class is never defined
+def test(model, loader, num_class=40): #FIXME: num_class is never defined
     mean_correct = []
     class_acc = np.zeros((num_class,3))
     for j, data in tqdm(enumerate(loader), total=len(loader)):
@@ -124,7 +124,7 @@ def main(args):
     testDataLoader = torch.utils.data.DataLoader(TEST_DATASET, batch_size=args.batch_size, shuffle=False, num_workers=4)
 
     '''MODEL LOADING'''
-    num_class = 11 # FIXME: hardcoded
+    num_class = 40 # FIXME: hardcoded
     MODEL = importlib.import_module(args.model)
 
     classifier = MODEL.get_model(args, num_class, normal_channel=args.normal).cuda()
