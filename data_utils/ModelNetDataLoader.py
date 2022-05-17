@@ -37,7 +37,7 @@ def farthest_point_sample(point, npoint):
     return point
 
 class ModelNetDataLoader(Dataset):
-    def __init__(self, root,  npoint=1024, split='train', uniform=False, normal_channel=True, cache_size=15000, dataset='modelNet40'):
+    def __init__(self, root,  npoint=1024, split='train', uniform=False, normal_channel=True, cache_size=15000, dataset='modelnet40'):
         self.root = root
         self.npoints = npoint
         self.uniform = uniform
