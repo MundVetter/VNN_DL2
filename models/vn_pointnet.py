@@ -65,7 +65,7 @@ class PointNetEncoder(nn.Module):
         self.feature_transform = feature_transform
         
         if self.feature_transform:
-            self.fstn = STNkd(args, d=64//3, activ=args.activ)
+            self.fstn = STNkd(args, d=64//3)
 
     def forward(self, x):
         B, D, N = x.size()
