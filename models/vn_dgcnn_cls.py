@@ -11,14 +11,14 @@ class get_model(nn.Module):
         self.args = args
         self.n_knn = args.n_knn
         
-        self.conv1 = VNLinearLeakyReLU(2, 64//3)
-        self.conv2 = VNLinearLeakyReLU(64//3*2, 64//3)
-        self.conv3 = VNLinearLeakyReLU(64//3*2, 128//3)
-        self.conv4 = VNLinearLeakyReLU(128//3*2, 256//3)
+        self.conv1 = VNgetLinearActiv(2, 64//3, fun=args.activ)
+        self.conv2 = VNgetLinearActiv(64//3*2, 64//3, fun=args.activ)
+        self.conv3 = VNgetLinearActiv(64//3*2, 128//3, fun=args.activ)
+        self.conv4 = VNgetLinearActiv(128//3*2, 256//3, fun=args.activ)
 
-        self.conv5 = VNLinearLeakyReLU(256//3+128//3+64//3*2, 1024//3, dim=4, share_nonlinearity=True)
+        self.conv5 = VNgetLinearActiv(256//3+128//3+64//3*2, 1024//3, dim=4, share_nonlinearity=True, fun=args.activ)
         
-        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False)
+        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False, fun=args.activ)
         self.linear1 = nn.Linear((1024//3)*12, 512)
         
         self.bn1 = nn.BatchNorm1d(512)
@@ -71,9 +71,9 @@ class get_model(nn.Module):
         x2 = F.adaptive_avg_pool1d(x, 1).view(batch_size, -1)
         x = torch.cat((x1, x2), 1)
         
-        x = F.leaky_relu(self.bn1(self.linear1(x)), negative_slope=0.2)
+        x = self.args.activ(self.bn1(self.linear1(x)))
         x = self.dp1(x)
-        x = F.leaky_relu(self.bn2(self.linear2(x)), negative_slope=0.2)
+        x = self.args.activ(self.bn2(self.linear2(x)))
         x = self.dp2(x)
         x = self.linear3(x)
         

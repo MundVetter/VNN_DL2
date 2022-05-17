@@ -14,12 +14,12 @@ class STNkd(nn.Module):
         super(STNkd, self).__init__()
         self.args = args
         
-        self.conv1 = VNLinearLeakyReLU(d, 64//3, dim=4, negative_slope=0.0)
-        self.conv2 = VNLinearLeakyReLU(64//3, 128//3, dim=4, negative_slope=0.0)
-        self.conv3 = VNLinearLeakyReLU(128//3, 1024//3, dim=4, negative_slope=0.0)
+        self.conv1 = VNgetLinearActiv(d, 64//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv2 = VNgetLinearActiv(64//3, 128//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv3 = VNgetLinearActiv(128//3, 1024//3, dim=4, negative_slope=0.0, fun=args.activ)
 
-        self.fc1 = VNLinearLeakyReLU(1024//3, 512//3, dim=3, negative_slope=0.0)
-        self.fc2 = VNLinearLeakyReLU(512//3, 256//3, dim=3, negative_slope=0.0)
+        self.fc1 = VNgetLinearActiv(1024//3, 512//3, dim=3, negative_slope=0.0, fun=args.activ)
+        self.fc2 = VNgetLinearActiv(512//3, 256//3, dim=3, negative_slope=0.0, fun=args.activ)
         
         if args.pooling == 'max':
             self.pool = VNMaxPool(1024//3)
@@ -49,15 +49,13 @@ class PointNetEncoder(nn.Module):
         self.args = args
         self.n_knn = args.n_knn
         
-        self.conv_pos = VNLinearLeakyReLU(3, 64//3, dim=5, negative_slope=0.0)
-        self.conv1 = VNLinearLeakyReLU(64//3, 64//3, dim=4, negative_slope=0.0)
-        self.conv2 = VNLinearLeakyReLU(64//3*2, 128//3, dim=4, negative_slope=0.0)
+        self.conv_pos = VNgetLinearActiv(3, 64//3, dim=5, negative_slope=0.0, fun=args.activ)
+        self.conv1 = VNgetLinearActiv(64//3, 64//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv2 = VNgetLinearActiv(64//3*2, 128//3, dim=4, negative_slope=0.0, fun=args.activ)
         
         self.conv3 = VNLinear(128//3, 1024//3)
         self.bn3 = VNBatchNorm(1024//3, dim=4)
-        
-        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False, negative_slope=0.0)
-        
+        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False, negative_slope=0.0, fun=args.activ)
         if args.pooling == 'max':
             self.pool = VNMaxPool(64//3)
         elif args.pooling == 'mean':
@@ -67,7 +65,7 @@ class PointNetEncoder(nn.Module):
         self.feature_transform = feature_transform
         
         if self.feature_transform:
-            self.fstn = STNkd(args, d=64//3)
+            self.fstn = STNkd(args, d=64//3, activ=args.activ)
 
     def forward(self, x):
         B, D, N = x.size()

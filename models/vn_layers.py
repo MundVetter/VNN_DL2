@@ -1,3 +1,4 @@
+from operator import ne
 import os
 import sys
 import copy
@@ -19,6 +20,48 @@ class VNLinear(nn.Module):
         x: point features of shape [B, N_feat, 3, N_samples, ...]
         '''
         x_out = self.map_to_feat(x.transpose(1,-1)).transpose(1,-1)
+        return x_out
+
+
+class VNgetLinearActiv(nn.Module):
+    def __init__(self, in_channels, out_channels, dim=5, share_nonlinearity=False, negative_slope=0.2, fun=None):
+        super(VNgetLinearActiv, self).__init__()
+        if fun is None:
+            self.instance = VNLinearLeakyReLU(in_channels, out_channels, dim, share_nonlinearity, negative_slope)
+        else:
+            self.instance = VNLinearActiv(fun, in_channels, out_channels, dim, share_nonlinearity)
+
+    def forward(self, x):
+        return self.instance.forward(x)
+
+
+class VNLinearActiv(nn.Module):
+    def __init__(self, fun, in_channels, out_channels, dim=5, share_nonlinearity=False):
+        super(VNLinearActiv, self).__init__()
+        self.activ = fun
+        self.dim = dim
+
+        self.map_to_feat = nn.Linear(in_channels, out_channels, bias=False)
+        self.batchnorm = VNBatchNorm(out_channels, dim=dim)
+        
+        if share_nonlinearity:
+            self.map_to_dir = nn.Linear(in_channels, 1, bias=False)
+        else:
+            self.map_to_dir = nn.Linear(in_channels, out_channels, bias=False)
+    
+    def forward(self, x):
+        '''
+        x: point features of shape [B, N_feat, 3, N_samples, ...]
+        '''
+        p = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
+        p = p / torch.sqrt((p * p).sum(2, keepdim=True))
+        # BatchNorm
+        p = self.batchnorm(p)
+
+        in_q_d = (x * p).sum(2, keepdim=True)
+
+        x_out = self.activ(in_q_d) * p + (x - in_q_d * p)
+
         return x_out
 
 
@@ -149,13 +192,14 @@ def mean_pool(x, dim=-1, keepdim=False):
 
 
 class VNStdFeature(nn.Module):
-    def __init__(self, in_channels, dim=4, normalize_frame=False, share_nonlinearity=False, negative_slope=0.2):
+    def __init__(self, in_channels, dim=4, normalize_frame=False, share_nonlinearity=False, negative_slope=0.2, fun=None):
         super(VNStdFeature, self).__init__()
         self.dim = dim
         self.normalize_frame = normalize_frame
         
-        self.vn1 = VNLinearLeakyReLU(in_channels, in_channels//2, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope)
-        self.vn2 = VNLinearLeakyReLU(in_channels//2, in_channels//4, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope)
+        self.vn1 = VNgetLinearActiv(in_channels, in_channels//2, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope, fun=fun)
+        self.vn1 = VNgetLinearActiv(in_channels//2, in_channels//4, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope, fun=fun)
+
         if normalize_frame:
             self.vn_lin = nn.Linear(in_channels//4, 2, bias=False)
         else:

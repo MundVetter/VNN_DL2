@@ -16,11 +16,11 @@ class get_model(nn.Module):
         self.bn9 = nn.BatchNorm1d(256)
         self.bn10 = nn.BatchNorm1d(128)
         
-        self.conv1 = VNLinearLeakyReLU(2, 64//3)
-        self.conv2 = VNLinearLeakyReLU(64//3, 64//3)
-        self.conv3 = VNLinearLeakyReLU(64//3*2, 64//3)
-        self.conv4 = VNLinearLeakyReLU(64//3, 64//3)
-        self.conv5 = VNLinearLeakyReLU(64//3*2, 64//3)
+        self.conv1 = VNgetLinearActiv(2, 64//3, fun=args.activ)
+        self.conv2 = VNgetLinearActiv(64//3, 64//3, fun=args.activ)
+        self.conv3 = VNgetLinearActiv(64//3*2, 64//3, fun=args.activ)
+        self.conv4 = VNgetLinearActiv(64//3, 64//3, fun=args.activ)
+        self.conv5 = VNgetLinearActiv(64//3*2, 64//3, fun=args.activ)
         
         if args.pooling == 'max':
             self.pool1 = VNMaxPool(64//3)
@@ -31,24 +31,20 @@ class get_model(nn.Module):
             self.pool2 = mean_pool
             self.pool3 = mean_pool
         
-        self.conv6 = VNLinearLeakyReLU(64//3*3, 1024//3, dim=4, share_nonlinearity=True)
-        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False)
+        self.conv6 = VNgetLinearActiv(64//3*3, 1024//3, dim=4, share_nonlinearity=True, fun=args.activ)
+        self.std_feature = VNStdFeature(1024//3*2, dim=4, normalize_frame=False, fun=args.activ)
         self.conv8 = nn.Sequential(nn.Conv1d(2299, 256, kernel_size=1, bias=False),
-                               self.bn8,
-                               nn.LeakyReLU(negative_slope=0.2))
+                               self.bn8)
         
         self.conv7 = nn.Sequential(nn.Conv1d(16, 64, kernel_size=1, bias=False),
-                                   self.bn7,
-                                   nn.LeakyReLU(negative_slope=0.2))
+                                   self.bn7)
         
         self.dp1 = nn.Dropout(p=0.5)
         self.conv9 = nn.Sequential(nn.Conv1d(256, 256, kernel_size=1, bias=False),
-                                   self.bn9,
-                                   nn.LeakyReLU(negative_slope=0.2))
+                                   self.bn9)
         self.dp2 = nn.Dropout(p=0.5)
         self.conv10 = nn.Sequential(nn.Conv1d(256, 128, kernel_size=1, bias=False),
-                                   self.bn10,
-                                   nn.LeakyReLU(negative_slope=0.2))
+                                   self.bn10)
         self.conv11 = nn.Conv1d(128, num_part, kernel_size=1, bias=False)
         
 
@@ -83,18 +79,18 @@ class get_model(nn.Module):
         x = x.max(dim=-1, keepdim=True)[0]
 
         l = l.view(batch_size, -1, 1)
-        l = self.conv7(l)
+        l = self.args.activ(self.conv7(l))
 
         x = torch.cat((x, l), dim=1)
         x = x.repeat(1, 1, num_points)
 
         x = torch.cat((x, x123), dim=1)
 
-        x = self.conv8(x)
+        x = self.args.activ(self.conv8(x))
         x = self.dp1(x)
-        x = self.conv9(x)
+        x = self.args.activ(self.conv9(x))
         x = self.dp2(x)
-        x = self.conv10(x)
+        x = self.args.activ(self.conv10(x))
         x = self.conv11(x)
         
         trans_feat = None

@@ -13,6 +13,7 @@ from tqdm import tqdm
 import sys
 import importlib
 from pytorch3d.transforms import RotateAxisAngle, Rotate, random_rotations
+from models.utils.activ_util import get_activ
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
@@ -35,6 +36,10 @@ def parse_args():
     parser.add_argument('--pooling', type=str, default='mean', help='VNN only: pooling method [default: mean]',
                         choices=['mean', 'max'])
     parser.add_argument('--n_knn', default=20, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
+    parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
+                        choices=['sigmoid', 'relu', 'leaky_relu', 'elu', None])
+    parsed = parser.parse_args()
+    parsed.activ = get_activ(parsed.activ)
     return parser.parse_args()
 
 def test(model, loader, num_class=40, vote_num=1):

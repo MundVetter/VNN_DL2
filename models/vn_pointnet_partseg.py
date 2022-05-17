@@ -19,16 +19,16 @@ class get_model(nn.Module):
             channel = 3
         self.num_part = num_part
         
-        self.conv_pos = VNLinearLeakyReLU(3, 64//3, dim=5, negative_slope=0.0)
-        self.conv1 = VNLinearLeakyReLU(64//3, 64//3, dim=4, negative_slope=0.0)
-        self.conv2 = VNLinearLeakyReLU(64//3, 128//3, dim=4, negative_slope=0.0)
-        self.conv3 = VNLinearLeakyReLU(128//3, 128//3, dim=4, negative_slope=0.0)
-        self.conv4 = VNLinearLeakyReLU(128//3*2, 512//3, dim=4, negative_slope=0.0)
+        self.conv_pos = VNgetLinearActiv(3, 64//3, dim=5, negative_slope=0.0, fun=args.activ)
+        self.conv1 = VNgetLinearActiv(64//3, 64//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv2 = VNgetLinearActiv(64//3, 128//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv3 = VNgetLinearActiv(128//3, 128//3, dim=4, negative_slope=0.0, fun=args.activ)
+        self.conv4 = VNgetLinearActiv(128//3*2, 512//3, dim=4, negative_slope=0.0, fun=args.activ)
         
         self.conv5 = VNLinear(512//3, 2048//3)
         self.bn5 = VNBatchNorm(2048//3, dim=4)
         
-        self.std_feature = VNStdFeature(2048//3*2, dim=4, normalize_frame=False, negative_slope=0.0)
+        self.std_feature = VNStdFeature(2048//3*2, dim=4, normalize_frame=False, negative_slope=0.0, fun=args.activ)
         
         if args.pooling == 'max':
             self.pool = VNMaxPool(64//3)
