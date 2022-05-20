@@ -5,8 +5,7 @@ ACTIV_MAP = {
     'sigmoid': (F.sigmoid, {}),
     'relu': (F.relu, {}),
     'elu': (F.elu, {'alpha': 1.0}),
-    'leaky_relu': (F.leaky_relu, {'negative_slope': 0.2}),
-    'silu': (F.SiLU, {})
+    'leaky_relu': (F.leaky_relu, {'negative_slope': 0.2})
 }
 
 def get_activ(fun_name):

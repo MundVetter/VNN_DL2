@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--optimizer', type=str, default='SGD', help='Pptimizer for training [default: SGD]')
     parser.add_argument('--gpu', type=str, default='0', help='Specify gpu device [default: 0]')
     parser.add_argument('--num_point', type=int, default=1024, help='Point Number [default: 1024]')
-    parser.add_argument('--log_dir', type=str, default='vn_dgcnn/aligned', help='Experiment root [default: vn_dgcnn/aligned]')
+    parser.add_argument('--log_dir', type=str, help='Experiment root')
     parser.add_argument('--normal', action='store_true', default=False, help='Whether to use normal information [default: False]')
     parser.add_argument('--num_votes', type=int, default=3, help='Aggregate classification scores with voting [default: 3]')
     parser.add_argument('--rot', type=str, default='aligned', help='Rotation augmentation to input data [default: aligned]',
