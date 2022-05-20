@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size in training [default: 32]')
     parser.add_argument('--epoch', default=250, type=int, help='Number of epoch in training [default: 250]')
     parser.add_argument('--learning_rate', default=0.001, type=float, help='Initial learning rate (for SGD it is multiplied by 100) [default: 0.001]')
-    parser.add_argument('--decay_rate', type=float, default=1e-4, help='Decay rate [default: 1e-4]')
+    parser.add_argument('--decay_rate', type=float, default=1e-4, help='Decay rate [default: 1e-4]')    	
     parser.add_argument('--optimizer', type=str, default='SGD', help='Pptimizer for training [default: SGD]')
     parser.add_argument('--gpu', type=str, default='0', help='Specify gpu device [default: 0]')
     parser.add_argument('--num_point', type=int, default=1024, help='Point Number [default: 1024]')
