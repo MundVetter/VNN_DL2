@@ -18,4 +18,4 @@ cd $HOME/vnn_dl2
 # Activate your environment
 source activate dl2
 # Run your code
-srun python train_cls.py --model vn_pointnet_cls --log_dir vn_pointnet/sigmoid_sgd --rot z --activ sigmoid
+srun python train_cls.py --model vn_pointnet_cls --log_dir vn_pointnet/leaky_relu_sgd --rot z --activ leaky_relu

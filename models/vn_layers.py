@@ -53,14 +53,23 @@ class VNLinearActiv(nn.Module):
         '''
         x: point features of shape [B, N_feat, 3, N_samples, ...]
         '''
-        p = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
-        p = p / torch.sqrt((p * p).sum(2, keepdim=True))
+        # print(x.shape, 0)
+        # print(x.transpose(1,-1).shape, 10)
+        # Linear
+        q = self.map_to_feat(x.transpose(1,-1)).transpose(1,-1)
         # BatchNorm
-        p = self.batchnorm(p)
+        q = self.batchnorm(q)
+        # Activation
+        k = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
+        # print(k.shape, 1)
+        k = k / (torch.sqrt((k * k).sum(2, keepdim=True)) + EPS)
+        # print(k.shape, 2)
+        # BatchNorm
+        # print(k.shape, 3)
 
-        in_q_d = (x * p).sum(2, keepdim=True)
+        in_q_d = (q * k).sum(2, keepdim=True)
 
-        x_out = self.activ(in_q_d) * p + (x - in_q_d * p)
+        x_out = self.activ(in_q_d) * k + (q - in_q_d * k)
 
         return x_out
 
@@ -198,7 +207,7 @@ class VNStdFeature(nn.Module):
         self.normalize_frame = normalize_frame
         
         self.vn1 = VNgetLinearActiv(in_channels, in_channels//2, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope, fun=fun)
-        self.vn1 = VNgetLinearActiv(in_channels//2, in_channels//4, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope, fun=fun)
+        self.vn2 = VNgetLinearActiv(in_channels//2, in_channels//4, dim=dim, share_nonlinearity=share_nonlinearity, negative_slope=negative_slope, fun=fun)
 
         if normalize_frame:
             self.vn_lin = nn.Linear(in_channels//4, 2, bias=False)
