@@ -47,9 +47,7 @@ def parse_args():
     parser.add_argument('--data_path', type=str, default='data/modelnet40_normal_resampled/', help='Data path')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
                         choices=['sigmoid', 'relu', 'leaky_relu', 'elu', None])
-    parsed = parser.parse_args()
-    parsed.activ = get_activ(parsed.activ)
-    return parsed
+    return parser.parse_args()
 
 def test(model, loader, num_class=40): #FIXME: num_class is never defined
     mean_correct = []
@@ -118,6 +116,9 @@ def main(args):
     logger.addHandler(file_handler)
     log_string('PARAMETER ...')
     log_string(args)
+
+    # Retrieve activation function from name.
+    args.activ = get_activ(args.activ)
 
     '''DATA LOADING'''
     log_string('Load dataset ...')
