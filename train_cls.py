@@ -61,8 +61,10 @@ def test(model, loader, num_class=40): #FIXME: num_class is never defined
         elif args.rot == 'so3':
             trot = Rotate(R=random_rotations(points.shape[0]))
         if trot is not None:
-            points = trot.transform_points(points)
-        
+            points[:, :, :3] = trot.transform_points(points[:, :, :3])
+            if args.normal:
+                 points[:, :, 3:] = trot.transform_points(points[:, :, 3:])
+                    
         target = target[:, 0]
         points = points.transpose(2, 1)
         points, target = points.cuda(), target.cuda()
@@ -82,6 +84,7 @@ def test(model, loader, num_class=40): #FIXME: num_class is never defined
 
 
 def main(args):
+    # torch.cuda.empty_cache()
     def log_string(str):
         logger.info(str)
         print(str)
@@ -184,7 +187,9 @@ def main(args):
             elif args.rot == 'so3':
                 trot = Rotate(R=random_rotations(points.shape[0]))
             if trot is not None:
-                points = trot.transform_points(points)
+                points[:, :, :3] = trot.transform_points(points[:, :, :3])
+                if args.normal:
+                    points[:, :, 3:] = trot.transform_points(points[:, :, 3:])
             
             points = points.data.numpy()
             points = provider.random_point_dropout(points)
