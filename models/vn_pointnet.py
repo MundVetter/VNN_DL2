@@ -49,7 +49,7 @@ class PointNetEncoder(nn.Module):
         self.args = args
         self.n_knn = args.n_knn
         
-        self.conv_pos = VNgetLinearActiv(6, 64//3, dim=5, negative_slope=0.0, fun=args.activ)
+        self.conv_pos = VNgetLinearActiv(6 if args.normal else 3, 64//3, dim=5, negative_slope=0.0, fun=args.activ)
         self.conv1 = VNgetLinearActiv(64//3, 64//3, dim=4, negative_slope=0.0, fun=args.activ)
         self.conv2 = VNgetLinearActiv(64//3*2, 128//3, dim=4, negative_slope=0.0, fun=args.activ)
         
