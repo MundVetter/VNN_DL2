@@ -62,8 +62,10 @@ class VNLinearActiv(nn.Module):
         # Activation
         k = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
         # print(k.shape, 1)
-        k = k / (torch.sqrt((k * k).sum(2, keepdim=True)) + EPS)
-        # print(k.shape, 2)
+        k = k / (torch.norm(k, dim=2, keepdim=True) + EPS)
+        # # print(k.shape, 2)
+        # print("new", torch.norm(k, dim=2, keepdim=True))
+        # print("old", torch.sqrt((k * k).sum(2, keepdim=True)))
         # BatchNorm
         # print(k.shape, 3)
 
