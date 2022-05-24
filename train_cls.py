@@ -210,7 +210,8 @@ def main(args):
             correct = pred_choice.eq(target.long().data).cpu().sum()
             mean_correct.append(correct.item() / float(points.size()[0]))
             loss.backward()
-            torch.nn.clip_grad_norm_(classifier.parameters(), args.grad_clip)
+            #clip grad norm
+            torch.nn.utils.clip_grad_norm_(classifier.parameters(), args.grad_clip)
             optimizer.step()
             global_step += 1
 
