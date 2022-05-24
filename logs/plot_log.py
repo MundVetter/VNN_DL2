@@ -6,7 +6,7 @@ def main(args):
         lines = f.read().splitlines()
 
     # Parse the log file
-    lines = [line for line in lines if 'Accuracy' in line]
+    lines = [float(line.split(' ')[-1]) for line in lines if 'Accuracy' in line]
     train_acc, test_acc = lines[::3], lines[1::3]
 
     # Plot the accuracy
@@ -18,7 +18,6 @@ def main(args):
     plt.title(args.title)
     if args.output:
         plt.savefig(args.output)
-    plt.savefig(args.output + '.pdf')
     plt.show()
 
 if __name__ == '__main__':
