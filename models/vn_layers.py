@@ -26,7 +26,7 @@ class VNLinear(nn.Module):
 class VNgetLinearActiv(nn.Module):
     def __init__(self, in_channels, out_channels, dim=5, share_nonlinearity=False, negative_slope=0.2, fun=None):
         super(VNgetLinearActiv, self).__init__()
-        if fun is None:
+        if fun.author:
             self.instance = VNLinearLeakyReLU(in_channels, out_channels, dim, share_nonlinearity, negative_slope)
         else:
             self.instance = VNLinearActiv(fun, in_channels, out_channels, dim, share_nonlinearity)
