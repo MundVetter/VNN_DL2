@@ -27,6 +27,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot log file')
     parser.add_argument('-f', '--file', help='Log file to plot', required=True)
     parser.add_argument('-o', '--output', help='Output file (e.g. out.pdf)', required=False)
-    parser.add_argument('-t', '--title', default='Model accuracy', help='Title of plot', required=True)
+    parser.add_argument('-t', '--title', default='Model accuracy', help='Title of plot', required=False)
     args = parser.parse_args()
     main(args)
