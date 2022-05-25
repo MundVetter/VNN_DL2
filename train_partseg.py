@@ -17,7 +17,7 @@ from tqdm import tqdm
 import provider
 import numpy as np
 from pytorch3d.transforms import RotateAxisAngle, Rotate, random_rotations
-from models.utils.activ_util import get_activ
+from models.utils.activ_util import ACTIV_MAP, get_activ
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
@@ -58,7 +58,7 @@ def parse_args():
                         choices=['mean', 'max'])
     parser.add_argument('--n_knn', default=40, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
-                        choices=['sigmoid', 'relu', 'leaky_relu', 'elu', None])
+                        choices=ACTIV_MAP.keys())
     return parser.parse_args()
 
 def main(args):

@@ -2,6 +2,7 @@ slurm*.out
 data/
 # Data and outputs
 log/
+!log/plot_log.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

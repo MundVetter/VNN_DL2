@@ -17,7 +17,7 @@ import provider
 import importlib
 import shutil
 from pytorch3d.transforms import RotateAxisAngle, Rotate, random_rotations
-from models.utils.activ_util import get_activ
+from models.utils.activ_util import ACTIV_MAP, get_activ
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = BASE_DIR
@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('--n_knn', default=20, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
     parser.add_argument('--data_path', type=str, default='data/modelnet40_normal_resampled/', help='Data path')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
-                        choices=['sigmoid', 'relu', 'leaky_relu', 'elu', 'mish', None])
+                        choices=ACTIV_MAP.keys())
     return parser.parse_args()
 
 def test(model, loader, num_class=40): #FIXME: num_class is never defined
@@ -61,8 +61,10 @@ def test(model, loader, num_class=40): #FIXME: num_class is never defined
         elif args.rot == 'so3':
             trot = Rotate(R=random_rotations(points.shape[0]))
         if trot is not None:
-            points = trot.transform_points(points)
-        
+            points[:, :, :3] = trot.transform_points(points[:, :, :3])
+            if args.normal:
+                 points[:, :, 3:] = trot.transform_points(points[:, :, 3:])
+                    
         target = target[:, 0]
         points = points.transpose(2, 1)
         points, target = points.cuda(), target.cuda()
@@ -82,6 +84,7 @@ def test(model, loader, num_class=40): #FIXME: num_class is never defined
 
 
 def main(args):
+    # torch.cuda.empty_cache()
     def log_string(str):
         logger.info(str)
         print(str)
@@ -184,7 +187,9 @@ def main(args):
             elif args.rot == 'so3':
                 trot = Rotate(R=random_rotations(points.shape[0]))
             if trot is not None:
-                points = trot.transform_points(points)
+                points[:, :, :3] = trot.transform_points(points[:, :, :3])
+                if args.normal:
+                    points[:, :, 3:] = trot.transform_points(points[:, :, 3:])
             
             points = points.data.numpy()
             points = provider.random_point_dropout(points)
