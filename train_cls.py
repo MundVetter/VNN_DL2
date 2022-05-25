@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('--n_knn', default=20, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
     parser.add_argument('--data_path', type=str, default='data/modelnet40_normal_resampled/', help='Data path')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
-                        choices=['sigmoid', 'relu', 'leaky_relu', 'elu', None])
+                        choices=['sigmoid', 'relu', 'leaky_relu', 'elu', 'mish', None])
     return parser.parse_args()
 
 def test(model, loader, num_class=40): #FIXME: num_class is never defined
