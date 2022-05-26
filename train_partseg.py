@@ -59,6 +59,7 @@ def parse_args():
     parser.add_argument('--n_knn', default=40, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
                         choices=ACTIV_MAP.keys())
+    parser.add_argument('--grad_clip', type=float, default=None, help='Gradient clipping [suggested: 1]')
     return parser.parse_args()
 
 def main(args):
@@ -208,6 +209,10 @@ def main(args):
             mean_correct.append(correct.item() / (args.batch_size * args.npoint))
             loss = criterion(seg_pred, target, trans_feat)
             loss.backward()
+
+            if args.grad_clip:
+                torch.nn.utils.clip_grad_norm_(classifier.parameters(), args.grad_clip)
+
             optimizer.step()
         train_instance_acc = np.mean(mean_correct)
         log_string('Train accuracy is: %.5f' % train_instance_acc)
