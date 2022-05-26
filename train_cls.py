@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument('--data_path', type=str, default='data/modelnet40_normal_resampled/', help='Data path')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
                         choices=ACTIV_MAP.keys())
-    parser.add_argument('--grad_clip', type=float, default=1, help='Gradient clipping [default: 1]')
+    parser.add_argument('--grad_clip', type=float, help='Gradient clipping [suggested: 1]')
     return parser.parse_args()
 
 def test(model, loader, num_class=40): #FIXME: num_class is never defined
@@ -210,8 +210,10 @@ def main(args):
             correct = pred_choice.eq(target.long().data).cpu().sum()
             mean_correct.append(correct.item() / float(points.size()[0]))
             loss.backward()
-            #clip grad norm
-            torch.nn.utils.clip_grad_norm_(classifier.parameters(), args.grad_clip)
+
+            if args.grad_clip:
+                torch.nn.utils.clip_grad_norm_(classifier.parameters(), args.grad_clip)
+
             optimizer.step()
             global_step += 1
 
