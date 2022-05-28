@@ -1,7 +1,7 @@
 slurm*.out
 data/
 # Data and outputs
-log/
+log/*
 !log/plot_log.py
 
 # Byte-compiled / optimized / DLL files
