@@ -46,11 +46,15 @@ def test(model, loader, num_class=40, vote_num=1):
     for j, data in tqdm(enumerate(loader), total=len(loader)):
         points, target = data
         
+        trot = None
         if args.rot == 'z':
-                trot = RotateAxisAngle(angle=torch.rand(points.shape[0])*360, axis="Z", degrees=True)
+            trot = RotateAxisAngle(angle=torch.rand(points.shape[0])*360, axis="Z", degrees=True)
         elif args.rot == 'so3':
             trot = Rotate(R=random_rotations(points.shape[0]))
-        points = trot.transform_points(points)
+        if trot is not None:
+            points[:, :, :3] = trot.transform_points(points[:, :, :3])
+            if args.normal:
+                points[:, :, 3:] = trot.transform_points(points[:, :, 3:])
         
         target = target[:, 0]
         points = points.transpose(2, 1)

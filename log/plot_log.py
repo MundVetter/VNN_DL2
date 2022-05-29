@@ -1,4 +1,14 @@
 def main(args):
+    import matplotlib as mpl
+    import os
+
+    if not os.environ.get('DISPLAY'):
+        print('No display available. Using non-interactive backend..')
+        if not args.output:
+            print('Please specify output file.')
+            return
+        mpl.use('Agg')
+
     import matplotlib.pyplot as plt
 
     # Read the log file
@@ -18,7 +28,8 @@ def main(args):
     plt.title(args.title)
     if args.output:
         plt.savefig(args.output)
-    plt.show()
+    if os.environ.get('DISPLAY'):
+        plt.show()
 
 if __name__ == '__main__':
     # Get arguments from command line
