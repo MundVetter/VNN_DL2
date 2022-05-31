@@ -102,7 +102,7 @@ class VNLinearActivMag(nn.Module):
         q_para = (q * k).sum(2, keepdim=True) * k
         q_para_norm = torch.norm(q_para, dim=2, keepdim=True)
 
-        x_out = self.activ(q_para_norm) / q_para_norm + (q - q_para)
+        x_out = self.activ(q_para_norm) / q_para_norm * q_para + (q - q_para)
 
         return x_out
 
