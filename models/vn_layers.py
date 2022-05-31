@@ -28,6 +28,8 @@ class VNgetLinearActiv(nn.Module):
         super(VNgetLinearActiv, self).__init__()
         if fun.author:
             self.instance = VNLinearLeakyReLU(in_channels, out_channels, dim, share_nonlinearity, negative_slope)
+        elif fun.mag:
+            self.instance = VNLinearActivMag(fun, in_channels, out_channels, dim, share_nonlinearity)
         else:
             self.instance = VNLinearActiv(fun, in_channels, out_channels, dim, share_nonlinearity)
 
@@ -53,25 +55,54 @@ class VNLinearActiv(nn.Module):
         '''
         x: point features of shape [B, N_feat, 3, N_samples, ...]
         '''
-        # print(x.shape, 0)
-        # print(x.transpose(1,-1).shape, 10)
         # Linear
         q = self.map_to_feat(x.transpose(1,-1)).transpose(1,-1)
+
         # BatchNorm
         q = self.batchnorm(q)
+
         # Activation
         k = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
-        # print(k.shape, 1)
         k = k / (torch.norm(k, dim=2, keepdim=True) + EPS)
-        # # print(k.shape, 2)
-        # print("new", torch.norm(k, dim=2, keepdim=True))
-        # print("old", torch.sqrt((k * k).sum(2, keepdim=True)))
-        # BatchNorm
-        # print(k.shape, 3)
 
         in_q_d = (q * k).sum(2, keepdim=True)
 
         x_out = self.activ(in_q_d) * k + (q - in_q_d * k)
+
+        return x_out
+
+class VNLinearActivMag(nn.Module):
+    def __init__(self, fun, in_channels, out_channels, dim=5, share_nonlinearity=False):
+        super(VNLinearActivMag, self).__init__()
+        self.activ = fun
+        self.dim = dim
+
+        self.map_to_feat = nn.Linear(in_channels, out_channels, bias=False)
+        self.batchnorm = VNBatchNorm(out_channels, dim=dim)
+        
+        if share_nonlinearity:
+            self.map_to_dir = nn.Linear(in_channels, 1, bias=False)
+        else:
+            self.map_to_dir = nn.Linear(in_channels, out_channels, bias=False)
+    
+    def forward(self, x):
+        '''
+        x: point features of shape [B, N_feat, 3, N_samples, ...]
+        '''
+        # Linear
+        q = self.map_to_feat(x.transpose(1,-1)).transpose(1,-1)
+
+        # BatchNorm
+        q = self.batchnorm(q)
+
+        # Activation
+        k = self.map_to_dir(x.transpose(1,-1)).transpose(1,-1)
+        k = k / (torch.norm(k, dim=2, keepdim=True) + EPS)
+
+        q_para = (q * k).sum(2, keepdim=True) * k
+        q_para_norm = torch.norm(q_para, dim=2, keepdim=True)
+
+        x_out = self.activ(q_para_norm) / q_para_norm * q_para + (q - q_para)
 
         return x_out
 

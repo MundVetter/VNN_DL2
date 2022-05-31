@@ -51,6 +51,7 @@ def parse_args():
     parser.add_argument('--n_knn', default=40, type=int, help='Number of nearest neighbors to use, not applicable to PointNet [default: 20]')
     parser.add_argument('--activ', type=str, default=None, help='Activation function [default: author LeakyReLU]',
                         choices=ACTIV_MAP.keys())
+    parser.add_argument('--magnitude_activation', action='store_true', default=False, help='Whether to use authors magnitude activation [default: False]')
     return parser.parse_args()
 
 def main(args):
@@ -75,7 +76,7 @@ def main(args):
     log_string(args)
 
     # Retrieve activation function from name.
-    args.activ = get_activ(args.activ)
+    args.activ = get_activ(args.activ, args.magnitude_activation)
 
     root = 'data/shapenetcore_partanno_segmentation_benchmark_v0_normal/'
 

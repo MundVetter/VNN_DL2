@@ -9,14 +9,11 @@ ACTIV_MAP = {
     'mish': (F.mish, {})
 }
 
-# def get_activ(fun_name):
-#     fun, args = ACTIV_MAP[fun_name]
-#     return lambda x: fun(x, **args)
-
 
 class get_activ():
-    def __init__(self, fun_name):
+    def __init__(self, fun_name, magnitude=False):
         self.author = fun_name==None
+        self.mag = magnitude
         fun, args = ACTIV_MAP[fun_name]
         self.activ = lambda x: fun(x, **args)
 
