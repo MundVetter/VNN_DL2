@@ -29,7 +29,7 @@ class VNgetLinearActiv(nn.Module):
         if fun.author:
             self.instance = VNLinearLeakyReLU(in_channels, out_channels, dim, share_nonlinearity, negative_slope)
         elif fun.mag:
-            self.instance = VNLinearActivMag(in_channels, out_channels, dim, share_nonlinearity)
+            self.instance = VNLinearActivMag(fun, in_channels, out_channels, dim, share_nonlinearity)
         else:
             self.instance = VNLinearActiv(fun, in_channels, out_channels, dim, share_nonlinearity)
 
