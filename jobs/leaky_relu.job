@@ -5,7 +5,7 @@
 #SBATCH --job-name=leaky_relu
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=3
-#SBATCH --time=40:00:00
+#SBATCH --time=47:00:00
 #SBATCH --mem=32000M
 #SBATCH --output=slurm_output_%A.out
 
@@ -18,4 +18,5 @@ cd $HOME/vnn_dl2
 # Activate your environment
 source activate dl2
 # Run your code
-srun python train_cls.py --model vn_pointnet_cls  --optimizer Adam --rot z --activ leaky_relu
+# srun python train_cls.py --model vn_pointnet_cls  --optimizer Adam --rot z --activ leaky_relu
+srun python train_cls.py --model vn_dgcnn_cls --rot z --activ leaky_relu --batch_size 16

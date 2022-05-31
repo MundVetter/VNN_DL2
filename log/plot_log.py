@@ -22,6 +22,20 @@ def main(args):
     # Plot the accuracy
     plt.plot(train_acc, label='Train Accuracy')
     plt.plot(test_acc, label='Test Accuracy')
+
+    if args.file2 is not None:
+        with open(args.file2, 'r') as f:
+            lines = f.read().splitlines()
+
+        # Parse the log file
+        lines = [float(line.split(' ')[-1]) for line in lines if 'Accuracy' in line]
+        train_acc2, test_acc2 = lines[::3], lines[1::3]
+
+        # Plot the accuracy
+        plt.plot(train_acc2, label='Train Accuracy 2')
+        plt.plot(test_acc2, label='Test Accuracy 2')
+
+
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
@@ -36,6 +50,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Plot log file')
     parser.add_argument('-f', '--file', help='Log file to plot', required=True)
+    parser.add_argument('-f2', '--file2', help='Second Log file to plot', default=None)
     parser.add_argument('-o', '--output', help='Output file (e.g. out.pdf)', required=False)
     parser.add_argument('-t', '--title', default='Model accuracy', help='Title of plot', required=False)
     args = parser.parse_args()
