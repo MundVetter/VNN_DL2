@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#SBATCH --partition=gpu_shared_course
+#SBATCH --gres=gpu:1
+#SBATCH --job-name=sigmoid
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=3
+#SBATCH --time=40:00:00
+#SBATCH --mem=32000M
+#SBATCH --output=slurm_output_%A.out
+
+module purge
+module load 2021
+module load Anaconda3/2021.05
+
+# Your job starts in the directory where you call sbatch
+cd $HOME/vnn_dl2
+
+# Activate your environment
+source activate dl2
+# Run your code
+
+DATE_WITH_TIME=`date "+%Y%m%d-%H%M%S"`
+srun python train_cls.py --model vn_pointnet_cls --optimizer Adam --rot z --activ leaky_relu --log_dir $DATE_WITH_TIME
+
+srun python test_cls.py --model vn_pointnet_cls --activ leaky_relu --log_dir $DATE_WITH_TIME --rot z
+srun python test_cls.py --model vn_pointnet_cls --activ leaky_relu --log_dir $DATE_WITH_TIME --rot so3
