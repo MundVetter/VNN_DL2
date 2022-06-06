@@ -10,9 +10,6 @@ For DGCNN we refer to https://github.com/CSteigstra/vnn-pc which is based on its
 ## Data Preparation
 
 + Classification: Download [ModelNet40](https://shapenet.cs.stanford.edu/media/modelnet40_normal_resampled.zip) and save in `data/modelnet40_normal_resampled/`.
-+ Part Segmentation: Download [ShapeNet](https://shapenet.cs.stanford.edu/media/shapenetcore_partanno_segmentation_benchmark_v0_normal.zip)  and save in `data/shapenetcore_partanno_segmentation_benchmark_v0_normal/`.
-
-Extract in the main directory, named `data`.  
 
 ## Usage
 
