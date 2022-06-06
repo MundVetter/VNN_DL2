@@ -1,6 +1,6 @@
 # Vector Neurons++: Extending Neural Dimensionality and Generalizing Activation Functions for Vector Neuron Networks
 
-This code base is forked from VN-PointNet <a href="https://github.com/FlyingGiraffe/vnn-pc/ target="_blank">Deng et al.</a>.
+This code base is forked from VN-PointNet <a href="https://github.com/FlyingGiraffe/vnn-pc/" target="_blank">Deng et al.</a>.
 We introduce a general framework built on top of what we call Vector Neurons for creating SO(3) equivariant neural networks. Extending neurons from single scalars to 3D vectors, our vector neurons transport SO(3) actions to latent spaces and provide a framework for building equivariance in common neural operations including linear layers, non-linearities, pooling, and normalization.
 
 ## Overview
