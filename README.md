@@ -11,19 +11,29 @@ We introduce a general framework built on top of what we call Vector Neurons for
 + Classification: Download [ModelNet40](https://shapenet.cs.stanford.edu/media/modelnet40_normal_resampled.zip) and save in `data/modelnet40_normal_resampled/`.
 + Part Segmentation: Download [ShapeNet](https://shapenet.cs.stanford.edu/media/shapenetcore_partanno_segmentation_benchmark_v0_normal.zip)  and save in `data/shapenetcore_partanno_segmentation_benchmark_v0_normal/`.
 
+Extract in the main directory, named `data`.  
+
 ## Usage
 
 ### Classification on ModelNet40
 Training
 ```
-python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z --activ sigmoid
-python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z --activ sigmoid --normal
+# Author's (Deng et al.) LeakyReLU
+python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z
+python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z --normal
+# Ours
+python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z --activ leaky_relu
+python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam --rot z --activ leaky_relu --normal
 ```
 
 Evaluation
 ```
-python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --activ sigmoid
-python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot so3 --activ sigmoid --normal
+# Author's (Deng et al.) LeakyReLU
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --normal
+# Ours
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --activ leaky_relu
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --activ leaky_relu --normal
 ```
 
 ## Citation
