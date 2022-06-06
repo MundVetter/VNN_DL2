@@ -1,10 +1,11 @@
 # Vector Neurons++: Extending Neural Dimensionality and Generalizing Activation Functions for Vector Neuron Networks
 
 This code base is forked from VN-PointNet <a href="https://github.com/FlyingGiraffe/vnn-pc/" target="_blank">Deng et al.</a>.
-We introduce a general framework built on top of what we call Vector Neurons for creating SO(3) equivariant neural networks. Extending neurons from single scalars to 3D vectors, our vector neurons transport SO(3) actions to latent spaces and provide a framework for building equivariance in common neural operations including linear layers, non-linearities, pooling, and normalization.
+We introduce the addition of arbitrary activation and inclusion of normals in the VN-layers, specifically for PointNet.
+For DGCNN we refer to https://github.com/CSteigstra/vnn-pc which is based on its correct implementation from https://github.com/FlyingGiraffe/vnn-pc .
 
 ## Overview
-`vnn++` is the author's implementation of Vector Neuron Networks with PointNet and DGCNN backbones. The current version only supports input data without normals.
+`vnn++` is the author's implementation of Vector Neuron Networks with PointNet and DGCNN backbones. The current version only supports PointNet for Modelnet40 classification.
 
 ## Data Preparation
 
