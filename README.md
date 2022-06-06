@@ -29,11 +29,11 @@ python train_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --optimizer Adam -
 Evaluation
 ```
 # Author's (Deng et al.) LeakyReLU
-python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z
-python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --normal
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot so3
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot so3 --normal
 # Ours
-python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --activ leaky_relu
-python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot z --activ leaky_relu --normal
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot so3 --activ leaky_relu
+python test_cls.py --log_dir LOG_DIR --model vn_pointnet_cls --rot so3 --activ leaky_relu --normal
 ```
 
 ## Citation
