@@ -7,6 +7,14 @@ For DGCNN we refer to https://github.com/CSteigstra/vnn-pc which is based on its
 ## Overview
 `vnn++` is the author's implementation of Vector Neuron Networks with PointNet and DGCNN backbones. The current version only supports PointNet for Modelnet40 classification.
 
+## Environment
+```
+conda env create -f dl2_gpu.yml
+conda activate dl2
+# or 
+source activate dl2
+```
+
 ## Data Preparation
 
 + Classification: Download [ModelNet40](https://shapenet.cs.stanford.edu/media/modelnet40_normal_resampled.zip) and save in `data/modelnet40_normal_resampled/`.
